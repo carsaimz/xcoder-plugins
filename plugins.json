@@ -11,8 +11,8 @@
 				"github": "carsaimz"
 			},
 			"author_verified": true,
-			"source": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/word-count/plugin.zip",
-			"source_fallback": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/word-count/plugin.zip",
+			"source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/word-count/plugin.zip",
+			"source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/word-count/plugin.zip",
 			"icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/word-count/icon.png",
 			"keywords": [
 				"word",
@@ -36,8 +36,8 @@
 				"github": "carsaimz"
 			},
 			"author_verified": true,
-			"source": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/case-toggle/plugin.zip",
-			"source_fallback": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/case-toggle/plugin.zip",
+			"source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/case-toggle/plugin.zip",
+			"source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/case-toggle/plugin.zip",
 			"icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/case-toggle/icon.png",
 			"keywords": [
 				"case",
@@ -63,8 +63,8 @@
 				"github": "carsaimz"
 			},
 			"author_verified": true,
-			"source": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/sort-lines/plugin.zip",
-			"source_fallback": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/sort-lines/plugin.zip",
+			"source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/sort-lines/plugin.zip",
+			"source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/sort-lines/plugin.zip",
 			"icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/sort-lines/icon.png",
 			"keywords": [
 				"sort",
@@ -88,8 +88,8 @@
 				"github": "carsaimz"
 			},
 			"author_verified": true,
-			"source": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/insert-date/plugin.zip",
-			"source_fallback": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/insert-date/plugin.zip",
+			"source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/insert-date/plugin.zip",
+			"source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/insert-date/plugin.zip",
 			"icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/insert-date/icon.png",
 			"keywords": [
 				"date",
@@ -113,8 +113,8 @@
 				"github": "carsaimz"
 			},
 			"author_verified": true,
-			"source": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/lorem-ipsum/plugin.zip",
-			"source_fallback": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/lorem-ipsum/plugin.zip",
+			"source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/lorem-ipsum/plugin.zip",
+			"source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/lorem-ipsum/plugin.zip",
 			"icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/lorem-ipsum/icon.png",
 			"keywords": [
 				"lorem",
@@ -138,8 +138,8 @@
 				"github": "carsaimz"
 			},
 			"author_verified": true,
-			"source": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/base64-tool/plugin.zip",
-			"source_fallback": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/base64-tool/plugin.zip",
+			"source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/base64-tool/plugin.zip",
+			"source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/base64-tool/plugin.zip",
 			"icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/base64-tool/icon.png",
 			"keywords": [
 				"base64",
@@ -164,8 +164,8 @@
 				"github": "carsaimz"
 			},
 			"author_verified": true,
-			"source": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/line-tools/plugin.zip",
-			"source_fallback": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/line-tools/plugin.zip",
+			"source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/line-tools/plugin.zip",
+			"source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/line-tools/plugin.zip",
 			"icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/line-tools/icon.png",
 			"keywords": [
 				"lines",
