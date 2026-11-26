@@ -1,0 +1,23 @@
+{
+  "id": "xcoder.scraper",
+  "name": "Scraper",
+  "main": "main.js",
+  "version": "1.0.0",
+  "icon": "icon.png",
+  "readme": "readme.md",
+  "author": {
+    "name": "Xcoder Team",
+    "github": "carsaimz"
+  },
+  "license": "MIT",
+  "keywords": [
+    "scraper",
+    "source",
+    "html",
+    "assets",
+    "secrets",
+    "endpoints",
+    "reverse-engineering"
+  ],
+  "supported_editor": "all"
+}

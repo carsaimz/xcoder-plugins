@@ -1,0 +1,23 @@
+{
+  "id": "xcoder.site-analyzer",
+  "name": "Site Analyzer",
+  "main": "main.js",
+  "version": "1.0.0",
+  "icon": "icon.png",
+  "readme": "readme.md",
+  "author": {
+    "name": "Xcoder Team",
+    "github": "carsaimz"
+  },
+  "license": "MIT",
+  "keywords": [
+    "analyzer",
+    "tech",
+    "stack",
+    "framework",
+    "detector",
+    "wappalyzer",
+    "web"
+  ],
+  "supported_editor": "all"
+}

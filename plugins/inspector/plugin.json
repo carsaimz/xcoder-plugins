@@ -1,0 +1,22 @@
+{
+  "id": "xcoder.inspector",
+  "name": "Inspector",
+  "main": "main.js",
+  "version": "1.0.0",
+  "icon": "icon.png",
+  "readme": "readme.md",
+  "author": {
+    "name": "Xcoder Team",
+    "github": "carsaimz"
+  },
+  "license": "MIT",
+  "keywords": [
+    "inspector",
+    "devtools",
+    "dom",
+    "console",
+    "network",
+    "debug"
+  ],
+  "supported_editor": "all"
+}

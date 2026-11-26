@@ -1,6 +1,86 @@
 {
   "plugins": [
     {
+      "id": "xcoder.site-analyzer",
+      "name": "Site Analyzer",
+      "version": "1.0.0",
+      "description": "Detect the tech stack of any website — frameworks, languages, servers, CDNs, CMSs, analytics, fonts, widgets — always showing the EVIDENCE behind each match (the header or HTML snippet that triggered it), plus a Details tab (meta + response headers), a «rendered version» mode that analyzes the final DOM of an internal WebView (SPAs and bot-blocked sites) and a copyable report. 110+ signatures, fully offline.\n\n## Usage\nInstall, then tap the **Site Analyzer** icon in the sidebar (or run `Site Analyzer: open` in the command palette), paste an address like `exemplo.com` and tap the magnifier.\n\n## Português\n**Analisador de sites**: descobre a stack de qualquer site com a evidência de cada deteção, aba Detalhes (meta + cabeçalhos), «Versão renderizada» via WebView interna para SPAs/bloqueios e relatório copiável. 110+ assinaturas, 100% offline.",
+      "changelogs": "### 1.0.0\n- Initial release on the Xcoder Marketplace — the former core tool, now an installable plugin.",
+      "author": {
+        "name": "Xcoder Team",
+        "github": "carsaimz"
+      },
+      "author_verified": true,
+      "source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/site-analyzer/plugin.zip",
+      "source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/site-analyzer/plugin.zip",
+      "icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/site-analyzer/icon.png",
+      "keywords": [
+        "analyzer",
+        "tech",
+        "stack",
+        "framework",
+        "detector",
+        "wappalyzer",
+        "web"
+      ],
+      "downloads": 640,
+      "supported_editor": "all",
+      "repository": "https://github.com/carsaimz/xcoder-plugins"
+    },
+    {
+      "id": "xcoder.inspector",
+      "name": "Inspector",
+      "version": "1.0.0",
+      "description": "DevTools-grade inspection for any page, inside the editor: an expandable **Elements** DOM tree (tap to open nodes, long-press for box/computed styles/outer HTML), a **Console** tab capturing log/warn/error/info/debug + page errors + unhandled rejections with a «run JS» input, a **Network** tab with every fetch/XHR (method, status, timing, type filters) and **Search** by CSS selector with on-page highlight. The page loads in a hidden WebView with capture injected at document-start — nothing leaves the device.\n\n## Usage\nInstall, then tap the **Inspector** icon in the sidebar (or run `Inspector: open`), paste an address and tap the magnifier.\n\n## Português\n**Inspector**: inspecção estilo DevTools de qualquer página — árvore de Elementos, Consola capturada (com «executar JS» na página), Rede (fetch/XHR com filtros) e Procura por seletor CSS com destaque. A página carrega numa WebView oculta com captura document-start — nada sai do dispositivo.",
+      "changelogs": "### 1.0.0\n- Initial release on the Xcoder Marketplace — the former core tool, now an installable plugin.",
+      "author": {
+        "name": "Xcoder Team",
+        "github": "carsaimz"
+      },
+      "author_verified": true,
+      "source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/inspector/plugin.zip",
+      "source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/inspector/plugin.zip",
+      "icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/inspector/icon.png",
+      "keywords": [
+        "inspector",
+        "devtools",
+        "dom",
+        "console",
+        "network",
+        "debug"
+      ],
+      "downloads": 720,
+      "supported_editor": "all",
+      "repository": "https://github.com/carsaimz/xcoder-plugins"
+    },
+    {
+      "id": "xcoder.scraper",
+      "name": "Scraper",
+      "version": "1.0.0",
+      "description": "Fetch any site's source code and reverse-engineer it on the spot: the **Source** tab shows the raw HTML through a native-HTTP → fetch → rendered-WebView fallback chain with a local **Beautify/Raw** toggle (HTML/CSS/JS formatting, no network needed), copy, save to device and open-in-editor actions; the **Assets** tab lists every image/script/style/font/media referenced by the page with absolute URLs; the **Secrets** tab scans for exposed credentials (AWS/Google/OpenAI/GitHub/Slack/GitLab keys, JWTs, private keys, `api_key=…` assignments — always masked) and lists endpoints/APIs found in the code.\n\n## Usage\nInstall, then tap the **Scraper** icon in the sidebar (or run `Scraper: open`), paste an address and tap the magnifier.\n\n## Português\n**Scraper**: código-fonte bruto ou renderizado (cadeia HTTP nativo → fetch → WebView), toggle Embelezar/Bruto local, Copiar/Guardar/Abrir no editor, recursos com URLs absolutos, segredos expostos (sempre mascarados) e endpoints/APIs — tudo offline.",
+      "changelogs": "### 1.0.0\n- Initial release on the Xcoder Marketplace — the former core tool, now an installable plugin.",
+      "author": {
+        "name": "Xcoder Team",
+        "github": "carsaimz"
+      },
+      "author_verified": true,
+      "source": "https://raw.githubusercontent.com/carsaimz/xcoder-plugins/main/plugins/scraper/plugin.zip",
+      "source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/scraper/plugin.zip",
+      "icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/scraper/icon.png",
+      "keywords": [
+        "scraper",
+        "source",
+        "html",
+        "assets",
+        "secrets",
+        "endpoints",
+        "reverse-engineering"
+      ],
+      "downloads": 815,
+      "supported_editor": "all",
+      "repository": "https://github.com/carsaimz/xcoder-plugins"
+    },
+    {
       "id": "xcoder.word-count",
       "name": "Word Count",
       "version": "1.0.0",
