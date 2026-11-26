@@ -1,0 +1,21 @@
+{
+	"id": "xcoder.unit-converter",
+	"name": "Unit Converter",
+	"main": "main.js",
+	"version": "1.0.0",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"author": {
+		"name": "Xcoder Team",
+		"github": "carsaimz"
+	},
+	"license": "MIT",
+	"keywords": [
+		"units",
+		"convert",
+		"temperature",
+		"length",
+		"data"
+	],
+	"supported_editor": "all"
+}

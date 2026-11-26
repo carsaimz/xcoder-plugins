@@ -1,0 +1,21 @@
+{
+	"id": "xcoder.password-generator",
+	"name": "Password Generator",
+	"main": "main.js",
+	"version": "1.0.0",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"author": {
+		"name": "Xcoder Team",
+		"github": "carsaimz"
+	},
+	"license": "MIT",
+	"keywords": [
+		"password",
+		"generator",
+		"crypto",
+		"random",
+		"security"
+	],
+	"supported_editor": "all"
+}

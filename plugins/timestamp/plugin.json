@@ -1,0 +1,21 @@
+{
+	"id": "xcoder.timestamp",
+	"name": "Timestamp Tools",
+	"main": "main.js",
+	"version": "1.0.0",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"author": {
+		"name": "Xcoder Team",
+		"github": "carsaimz"
+	},
+	"license": "MIT",
+	"keywords": [
+		"timestamp",
+		"epoch",
+		"iso",
+		"date",
+		"time"
+	],
+	"supported_editor": "all"
+}

@@ -1,0 +1,21 @@
+{
+	"id": "xcoder.jwt-decoder",
+	"name": "JWT Decoder",
+	"main": "main.js",
+	"version": "1.0.0",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"author": {
+		"name": "Xcoder Team",
+		"github": "carsaimz"
+	},
+	"license": "MIT",
+	"keywords": [
+		"jwt",
+		"token",
+		"decode",
+		"auth",
+		"claims"
+	],
+	"supported_editor": "all"
+}

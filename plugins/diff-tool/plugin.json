@@ -1,0 +1,21 @@
+{
+	"id": "xcoder.diff-tool",
+	"name": "Diff Tool",
+	"main": "main.js",
+	"version": "1.0.0",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"author": {
+		"name": "Xcoder Team",
+		"github": "carsaimz"
+	},
+	"license": "MIT",
+	"keywords": [
+		"diff",
+		"compare",
+		"lcs",
+		"changes",
+		"merge"
+	],
+	"supported_editor": "all"
+}

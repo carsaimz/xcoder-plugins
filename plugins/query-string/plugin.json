@@ -1,0 +1,21 @@
+{
+	"id": "xcoder.query-string",
+	"name": "Query String Tools",
+	"main": "main.js",
+	"version": "1.0.0",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"author": {
+		"name": "Xcoder Team",
+		"github": "carsaimz"
+	},
+	"license": "MIT",
+	"keywords": [
+		"query",
+		"url",
+		"params",
+		"json",
+		"encode"
+	],
+	"supported_editor": "all"
+}

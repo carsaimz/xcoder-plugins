@@ -1,0 +1,21 @@
+{
+	"id": "xcoder.base-converter",
+	"name": "Base Converter",
+	"main": "main.js",
+	"version": "1.0.0",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"author": {
+		"name": "Xcoder Team",
+		"github": "carsaimz"
+	},
+	"license": "MIT",
+	"keywords": [
+		"base",
+		"hex",
+		"binary",
+		"octal",
+		"number"
+	],
+	"supported_editor": "all"
+}
