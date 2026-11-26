@@ -590,6 +590,13 @@
 	xcoder.setPluginInit(PLUGIN_ID, function () {
 		var strings = window.strings || {};
 		var title = strings["inspector"] || "Inspector";
+var sidebarAppsApi = xcoder.require("sidebarApps");
+		var webInspectorApi = xcoder.require("webInspector");
+		if (!sidebarAppsApi || typeof sidebarAppsApi.add !== "function" || !webInspectorApi) {
+			var toastApi = xcoder.require("toast");
+			if (toastApi) toastApi("This plugin needs XCoder v1.8.43+ — update the app first", 4000);
+			return;
+		}
 		var webInspector = xcoder.require("webInspector");
 
 		injectStyle();
@@ -604,7 +611,7 @@
 			},
 		});
 
-		xcoder.sidebarApps.add(
+		sidebarAppsApi.add(
 			"cod:code",
 			"plugin-inspector",
 			title,
@@ -618,7 +625,7 @@
 
 		xcoder.setPluginUnmount(PLUGIN_ID, function () {
 			xcoder.removeCommand("inspector:open");
-			xcoder.sidebarApps.remove("plugin-inspector");
+			try { sidebarAppsApi.remove("plugin-inspector"); } catch (e) {}
 			var style = document.getElementById(CSS_ID);
 			if (style) style.remove();
 			webInspector.onInspectorEvent(function () {});

@@ -2,7 +2,7 @@
   "id": "xcoder.scraper",
   "name": "Scraper",
   "main": "main.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "icon": "icon.png",
   "readme": "readme.md",
   "author": {
@@ -19,5 +19,7 @@
     "endpoints",
     "reverse-engineering"
   ],
-  "supported_editor": "all"
+  "supported_editor": "all",
+  "min_version_code": 10843,
+  "min_version_name": "1.8.43"
 }

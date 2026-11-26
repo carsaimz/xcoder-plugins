@@ -618,6 +618,14 @@
         xcoder.setPluginInit(PLUGIN_ID, function () {
                 var strings = window.strings || {};
                 var title = strings["scraper"] || "Scraper";
+                var sidebarAppsApi = xcoder.require("sidebarApps");
+                var webScraperApi = xcoder.require("webScraper");
+                if (!sidebarAppsApi || typeof sidebarAppsApi.add !== "function"
+                        || !webScraperApi) {
+                	var toastApi = xcoder.require("toast");
+                	if (toastApi) toastApi("This plugin needs XCoder v1.8.43+ — update the app first", 4000);
+                	return;
+                }
 
                 injectStyle();
 
@@ -630,7 +638,7 @@
                         },
                 });
 
-                xcoder.sidebarApps.add(
+                sidebarAppsApi.add(
                         "cod:globe",
                         "plugin-scraper",
                         title,
@@ -644,7 +652,7 @@
 
                 xcoder.setPluginUnmount(PLUGIN_ID, function () {
                         xcoder.removeCommand("scraper:open");
-                        xcoder.sidebarApps.remove("plugin-scraper");
+                        try { sidebarAppsApi.remove("plugin-scraper"); } catch (e) {}
                         var style = document.getElementById(CSS_ID);
                         if (style) style.remove();
                         page = null;
