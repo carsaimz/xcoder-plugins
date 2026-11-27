@@ -29,6 +29,7 @@
 	var storageData = null;
 	var storageFilter = "local";
 	var netFilterType = "all";
+	var consoleFilter = "all";
 	var consoleCount = 0;
 	var networkCount = 0;
 	var expanded = new Set([""]);
@@ -70,8 +71,8 @@
 			".xin-urlbar input{flex:1;min-width:0;padding:10px 12px;border-radius:var(--radius-sm,8px);border:1px solid var(--hairline,var(--border-color));background:var(--surface-2,var(--primary-color));color:var(--primary-text-color);font-size:14px;outline:none;}",
 			".xin-urlbar .icon{padding:8px;opacity:.8;}",
 			".xin-status{padding:7px 12px;font-size:12.5px;opacity:.75;border-bottom:1px solid var(--hairline,var(--border-color));min-height:18px;}",
-			".xin-tabs{display:flex;gap:4px;padding:8px 10px 0;}",
-			".xin-tab{display:flex;align-items:center;gap:6px;padding:8px 12px;border:none;background:none;color:var(--primary-text-color);opacity:.6;font-size:13px;border-bottom:2px solid transparent;}",
+			".xin-tabs{display:flex;flex-wrap:wrap;gap:2px 8px;padding:8px 10px 0;row-gap:2px;}",
+			".xin-tab{display:flex;align-items:center;gap:5px;padding:7px 9px;border:none;background:none;color:var(--primary-text-color);opacity:.6;font-size:12.5px;border-bottom:2px solid transparent;}",
 			".xin-tab.active{opacity:1;border-bottom-color:var(--primary-color,#4f8cff);}",
 			".xin-tab .xin-badge{background:var(--primary-color,#4f8cff);color:#fff;border-radius:var(--radius-full,999px);font-size:11px;padding:1px 7px;}",
 			".xin-panel{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;padding:10px 12px 24px;}",
@@ -85,6 +86,8 @@
 			".xin-tag-class{opacity:.6;}",
 			".xin-text{opacity:.7;white-space:pre-wrap;word-break:break-word;}",
 			".xin-console-line{display:flex;gap:8px;padding:5px 8px;border-bottom:1px solid var(--hairline,var(--border-color));font-family:monospace;font-size:12px;word-break:break-word;}",
+		".xin-console-ts{opacity:.45;flex:0 0 auto;}",
+		".xin-level-system{opacity:.55;font-style:italic;}",
 			".xin-level-log{opacity:.85;}",
 			".xin-level-warn{color:#e2b341;}",
 			".xin-level-error{color:#f48771;}",
@@ -117,14 +120,12 @@
 
 	function nodeLabel(node) {
 		if (!node) return "?";
-		if (node.kind === "text") {
-			var text = String(node.label || "").trim();
-			return text ? '"' + text.slice(0, 80) + '"' : "(text)";
-		}
-		var label = node.label || "?";
+		var label = node.tag || node.label || "?";
 		var parts = [];
 		if (node.id) parts.push("#" + node.id);
-		if (node.class) parts.push("." + String(node.class).trim().split(/\s+/).join("."));
+		var cls = node.classes || node.class;
+		if (cls) parts.push("." + String(cls).trim().split(/\s+/).join("."));
+		if (node.text && label === "#text") return '"' + String(node.text).slice(0, 60) + '"';
 		return parts.length ? label + " " + parts.join("") : label;
 	}
 
@@ -158,9 +159,18 @@
 		root.querySelectorAll(".xin-panel").forEach(function ($panel) {
 			$panel.classList.toggle("hidden", $panel.dataset.panel !== tab);
 		});
+		// every panel re-renders on open — a panel that captured entries while
+		// hidden (or whose render was pending) must never show stale content
 		if (tab === "storage") {
 			fetchStorage();
 		} else if (tab === "elements") {
+			refreshBadges();
+			renderTree();
+		} else if (tab === "console") {
+			renderConsole();
+			refreshBadges();
+		} else if (tab === "network") {
+			renderNetwork();
 			refreshBadges();
 		}
 	}
@@ -225,6 +235,20 @@
 		var consolePanel = el("div", "xin-panel hidden");
 		consolePanel.dataset.panel = "console";
 		var consoleHead = el("div", "xin-chiprow");
+		["all", "log", "info", "warn", "error"].forEach(function (level) {
+			var chip = el("button", "xin-chip" + (level === "all" ? " active" : ""));
+			chip.type = "button";
+			chip.textContent = t("inspector console " + level, level);
+			chip.dataset.level = level;
+			chip.addEventListener("click", function () {
+				consoleFilter = level;
+				consoleHead.querySelectorAll(".xin-chip").forEach(function ($chip) {
+					$chip.classList.toggle("active", $chip.dataset.level === level);
+				});
+				renderConsole();
+			});
+			consoleHead.appendChild(chip);
+		});
 		var clearBtn = el("button", "xin-btn");
 		clearBtn.type = "button";
 		clearBtn.appendChild(icon("clear-all"));
@@ -342,8 +366,18 @@
 				treeCache.clear();
 				expanded = new Set([""]);
 				storageData = null;
+				// a system line keeps the Consola alive even for pages that
+				// never log — the user always sees proof of capture
+				consoleLog.push({
+					level: "system",
+					text: "▸ " + ((data && (data.title || data.url)) || ""),
+					ts: Date.now(),
+				});
+				consoleCount++;
+				if (activeTab === "console") renderConsole();
 				if (activeTab === "elements") renderTree();
 				if (activeTab === "storage") fetchStorage();
+				refreshBadges();
 				setStatus(t("inspector loaded", "Página carregada — toque para expandir"));
 			} else if (event === "pageClosed") {
 				treeCache.clear();
@@ -388,8 +422,21 @@
 			return;
 		}
 		if (!treeCache.has("")) {
+			$tree.replaceChildren(el("div", "xin-empty", t("inspector loading", "A abrir página…")));
 			loadNode("").then(renderTree).catch(function (e) {
 				setStatus(String((e && e.message) || e));
+				var box = el("div", "xin-empty");
+				box.appendChild(el("div", "", t("inspector tree error", "Não foi possível ler a árvore da página")));
+				var retry = el("button", "xin-btn");
+				retry.type = "button";
+				retry.appendChild(icon("refresh"));
+				retry.appendChild(document.createTextNode(t("inspector tree retry", "Tentar de novo")));
+				retry.addEventListener("click", function () {
+					treeCache.clear();
+					renderTree();
+				});
+				box.appendChild(retry);
+				$tree.replaceChildren(box);
 			});
 			return;
 		}
@@ -485,13 +532,29 @@
 
 	// --------------------------------------------------------------- console
 
+	function consoleTs(entry) {
+		if (!entry || !entry.ts) return "";
+		var d = new Date(entry.ts);
+		var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+		return pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+	}
+
 	function renderConsole() {
 		if (!$console) return;
-		var rows = consoleLog.map(function (entry) {
-			var row = el("div", "xin-console-line xin-level-" + (entry.level || "log"));
-			row.appendChild(el("span", "xin-level-" + (entry.level || "log"), entry.text || ""));
-			return row;
-		});
+		var rows = consoleLog
+			.filter(function (entry) {
+				var level = entry.level || "log";
+				return consoleFilter === "all" || level === consoleFilter ||
+					(consoleFilter === "warn" && level === "system");
+			})
+			.map(function (entry) {
+				var level = entry.level || "log";
+				var row = el("div", "xin-console-line xin-level-" + level);
+				var ts = el("span", "xin-console-ts", consoleTs(entry));
+				row.appendChild(ts);
+				row.appendChild(el("span", "xin-level-" + level, entry.text || ""));
+				return row;
+			});
 		if (!rows.length) {
 			rows = [el("div", "xin-empty", t("inspector console empty", "Sem mensagens ainda"))];
 		}
@@ -676,6 +739,20 @@
 				row.appendChild(status);
 				row.appendChild(el("span", "xin-net-url", String(entry.url || "").slice(0, 140)));
 				row.appendChild(el("span", "xin-net-ms", entry.ms != null ? entry.ms + "ms" : ""));
+				row.addEventListener("click", function () {
+					// DevTools «Response» parity — tap toggles the captured body
+					var existing = row.querySelector(".xin-storage-full");
+					if (existing) {
+						existing.remove();
+						return;
+					}
+					var box = el("div", "xin-storage-full");
+					var bodyText = entry.error
+						? "⚠ " + entry.error
+						: entry.body || t("inspector net no body", "Sem corpo capturado (mídia/binário ou resposta vazia)");
+					box.textContent = String(bodyText).slice(0, 20000);
+					row.appendChild(box);
+				});
 				return row;
 			});
 		if (!rows.length) {
