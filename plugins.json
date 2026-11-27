@@ -31,9 +31,9 @@
     {
       "id": "xcoder.inspector",
       "name": "Inspector",
-      "version": "1.0.1",
-      "description": "DevTools-grade inspection for any page, inside the editor: an expandable **Elements** DOM tree (tap to open nodes, long-press for box/computed styles/outer HTML), a **Console** tab capturing log/warn/error/info/debug + page errors + unhandled rejections with a «run JS» input, a **Network** tab with every fetch/XHR (method, status, timing, type filters) and **Search** by CSS selector with on-page highlight. The page loads in a hidden WebView with capture injected at document-start — nothing leaves the device.\n\n## Usage\nInstall, then tap the **Inspector** icon in the sidebar (or run `Inspector: open`), paste an address and tap the magnifier.\n\n## Português\n**Inspector**: inspecção estilo DevTools de qualquer página — árvore de Elementos, Consola capturada (com «executar JS» na página), Rede (fetch/XHR com filtros) e Procura por seletor CSS com destaque. A página carrega numa WebView oculta com captura document-start — nada sai do dispositivo.",
-      "changelogs": "### 1.0.0\n- Initial release on the Xcoder Marketplace — the former core tool, now an installable plugin.",
+      "version": "1.1.0",
+      "description": "DevTools-grade inspection for any page, inside the editor: an expandable **Elements** DOM tree (tap to open nodes, long-press for box/computed styles/outer HTML), a **Console** tab capturing log/warn/error/info/debug + page errors + unhandled rejections with a «run JS» input, a **Network** tab with every fetch/XHR (method, status, timing, type filters), **Search** by CSS selector with on-page highlight and a **Storage** tab (localStorage, sessionStorage, cookies) with value preview, copy and per-entry delete. The page loads in a hidden WebView with capture injected at document-start — nothing leaves the device.\n\n## Usage\nInstall, then tap the **Inspector** icon in the sidebar (or run `Inspector: open`), paste an address and tap the magnifier.\n\n## Português\n**Inspector**: inspecção estilo DevTools de qualquer página — árvore de Elementos, Consola capturada (com «executar JS» na página), Rede (fetch/XHR com filtros), Procura por seletor CSS com destaque e Armazenamento (localStorage, sessionStorage, cookies). A página carrega numa WebView oculta com captura document-start — nada sai do dispositivo.",
+      "changelogs": "### 1.1.0\n- Storage tab: localStorage / sessionStorage / cookies with value preview, copy and per-entry delete.\n\n### 1.0.0\n- Initial release on the Xcoder Marketplace — the former core tool, now an installable plugin.",
       "author": {
         "name": "Xcoder Team",
         "github": "carsaimz"
@@ -43,12 +43,16 @@
       "source_fallback": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/inspector/plugin.zip",
       "icon": "https://cdn.jsdelivr.net/gh/carsaimz/xcoder-plugins@main/plugins/inspector/icon.png",
       "keywords": [
-        "inspector",
+        "application",
+        "console",
+        "cookies",
+        "debug",
         "devtools",
         "dom",
-        "console",
+        "inspector",
+        "localstorage",
         "network",
-        "debug"
+        "storage"
       ],
       "downloads": 720,
       "supported_editor": "all",

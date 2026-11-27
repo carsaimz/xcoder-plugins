@@ -14,6 +14,8 @@
 	var $tree = null;
 	var $console = null;
 	var $network = null;
+	var $storage = null;
+	var $storageFilter = null;
 	var $netFilter = null;
 	var $searchOut = null;
 	var $searchIn = null;
@@ -24,6 +26,8 @@
 	var treeCache = new Map(); // path -> { self, children, total }
 	var consoleLog = [];
 	var networkLog = [];
+	var storageData = null;
+	var storageFilter = "local";
 	var netFilterType = "all";
 	var consoleCount = 0;
 	var networkCount = 0;
@@ -98,7 +102,9 @@
 			".xin-net-ok{color:#4ec994;}.xin-net-fail{color:#f48771;}",
 			".xin-net-url{flex:1;}",
 			".xin-net-ms{opacity:.5;flex:0 0 auto;}",
-			".xin-searchrow{display:flex;gap:6px;padding-bottom:10px;}",
+			".xin-searchrow{display:flex;gap:8px;padding:10px 12px;border-bottom:1px solid var(--hairline,var(--border-color));}",
+			".xin-storage-full{font-family:monospace;font-size:11.5px;opacity:.85;word-break:break-all;padding:6px 10px;background:var(--surface-1,var(--secondary-color));border-radius:var(--radius-sm,8px);margin-top:4px;max-height:140px;overflow:auto;}",
+			".xin-empty{padding:18px 12px;text-align:center;opacity:.6;font-size:13px;}",
 			".xin-searchrow input{flex:1;min-width:0;padding:9px 10px;border-radius:var(--radius-sm,8px);border:1px solid var(--hairline,var(--border-color));background:var(--surface-2,var(--primary-color));color:var(--primary-text-color);font-size:13px;outline:none;}",
 			".xin-empty{padding:24px 12px;opacity:.5;text-align:center;font-size:13px;}",
 			".xin-inspectbox{background:var(--surface-2,var(--primary-color));border:1px solid var(--hairline,var(--border-color));border-radius:var(--radius-sm,8px);padding:10px;font-family:monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;}",
@@ -152,14 +158,25 @@
 		root.querySelectorAll(".xin-panel").forEach(function ($panel) {
 			$panel.classList.toggle("hidden", $panel.dataset.panel !== tab);
 		});
-		if (tab === "elements") refreshBadges();
+		if (tab === "storage") {
+			fetchStorage();
+		} else if (tab === "elements") {
+			refreshBadges();
+		}
 	}
 
 	function refreshBadges() {
 		if (!root) return;
 		root.querySelectorAll("[data-badge]").forEach(function ($badge) {
 			var name = $badge.dataset.badge;
-			var count = name === "console" ? consoleCount : name === "network" ? networkCount : 0;
+			var count = 0;
+			if (name === "console") count = consoleCount;
+			else if (name === "network") count = networkCount;
+			else if (name === "storage" && storageData) {
+				count = Object.keys(storageData.local || {}).length +
+					Object.keys(storageData.session || {}).length +
+					(storageData.cookies || []).length;
+			}
 			$badge.textContent = count ? String(count) : "";
 			$badge.classList.toggle("hidden", !count);
 		});
@@ -198,6 +215,7 @@
 		tabs.appendChild(makeTab("console", "debug-console", t("inspector console", "Consola")));
 		tabs.appendChild(makeTab("network", "broadcast", t("inspector network", "Rede")));
 		tabs.appendChild(makeTab("search", "search", t("inspector search", "Procurar")));
+		tabs.appendChild(makeTab("storage", "database", t("inspector storage", "Armazenamento")));
 
 		var elementsPanel = el("div", "xin-panel");
 		elementsPanel.dataset.panel = "elements";
@@ -281,6 +299,39 @@
 		root.appendChild(consolePanel);
 		root.appendChild(networkPanel);
 		root.appendChild(searchPanel);
+
+		var storagePanel = el("div", "xin-panel hidden");
+		storagePanel.dataset.panel = "storage";
+		$storageFilter = el("div", "xin-chiprow");
+		[
+			["local", "localStorage"],
+			["session", "sessionStorage"],
+			["cookies", "Cookies"],
+		].forEach(function (pair) {
+			var type = pair[0];
+			var chip = el("button", "xin-chip" + (type === storageFilter ? " active" : ""));
+			chip.type = "button";
+			chip.textContent = t("inspector storage " + type, pair[1]);
+			chip.dataset.type = type;
+			chip.addEventListener("click", function () {
+				storageFilter = type;
+				$storageFilter.querySelectorAll(".xin-chip").forEach(function ($chip) {
+					$chip.classList.toggle("active", $chip.dataset.type === type);
+				});
+				renderStorage();
+			});
+			$storageFilter.appendChild(chip);
+		});
+		var storageRefresh = el("button", "xin-btn");
+		storageRefresh.type = "button";
+		storageRefresh.appendChild(icon("refresh"));
+		storageRefresh.appendChild(document.createTextNode(t("inspector storage refresh", "Atualizar")));
+		storageRefresh.addEventListener("click", fetchStorage);
+		$storageFilter.appendChild(storageRefresh);
+		storagePanel.appendChild($storageFilter);
+		$storage = el("div", "xin-storage-out");
+		storagePanel.appendChild($storage);
+		root.appendChild(storagePanel);
 	}
 
 	// ---------------------------------------------------------------- events
@@ -290,7 +341,9 @@
 			if (event === "pageFinished") {
 				treeCache.clear();
 				expanded = new Set([""]);
+				storageData = null;
 				if (activeTab === "elements") renderTree();
+				if (activeTab === "storage") fetchStorage();
 				setStatus(t("inspector loaded", "Página carregada — toque para expandir"));
 			} else if (event === "pageClosed") {
 				treeCache.clear();
@@ -446,6 +499,146 @@
 		$console.scrollTop = $console.scrollHeight;
 	}
 
+	// ---------------------------------------------------------------- storage
+
+	/** Reads localStorage + sessionStorage + cookies from the page in one
+	 * evaluateInPage call (DevTools Application tab parity). Keys never
+	 * leave the device — they are rendered in the plugin UI only. */
+	function fetchStorage() {
+		var webInspector = xcoder.require("webInspector");
+		var code =
+			"(function(){var out={local:{},session:{},cookies:[]};" +
+			"try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);out.local[k]=String(localStorage.getItem(k));}}catch(e){}" +
+			"try{for(var j=0;j<sessionStorage.length;j++){var sk=sessionStorage.key(j);out.session[sk]=String(sessionStorage.getItem(sk));}}catch(e){}" +
+			"try{out.cookies=document.cookie?document.cookie.split('; ').filter(Boolean):[];}catch(e){}" +
+			"return JSON.stringify(out);})()";
+		webInspector
+			.evaluateInPage(code)
+			.then(function (result) {
+				if (result && result.ok) {
+					try {
+						storageData = JSON.parse(result.value);
+					} catch (e) {
+						storageData = null;
+						setStatus(t("inspector storage failed", "Não foi possível ler o armazenamento"));
+					}
+				} else {
+					storageData = null;
+				}
+				renderStorage();
+				refreshBadges();
+			})
+			.catch(function (e) {
+				setStatus(String((e && e.message) || e));
+			});
+	}
+
+	/** Removes one entry from localStorage/sessionStorage inside the page. */
+	function removeStorageItem(kind, key) {
+		var webInspector = xcoder.require("webInspector");
+		var code =
+			"(function(){try{" +
+			(kind === "session" ? "sessionStorage" : "localStorage") +
+			".removeItem(" + JSON.stringify(key) + ");return 'ok'}catch(e){return 'fail'}})()";
+		webInspector
+			.evaluateInPage(code)
+			.then(function () {
+				fetchStorage();
+			})
+			.catch(function (e) {
+				setStatus(String((e && e.message) || e));
+			});
+	}
+
+	/** Deletes one non-HttpOnly cookie by expiring it inside the page. */
+	function removeCookie(name) {
+		var webInspector = xcoder.require("webInspector");
+		var code =
+			"(function(){try{document.cookie=" + JSON.stringify(name) +
+			"+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';return 'ok'}catch(e){return 'fail'}})()";
+		webInspector
+			.evaluateInPage(code)
+			.then(function () {
+				fetchStorage();
+			})
+			.catch(function (e) {
+				setStatus(String((e && e.message) || e));
+			});
+	}
+
+	function storageRow(kind, key, value) {
+		var row = el("div", "xin-net-item");
+		var head = el("div", "xin-net-head");
+		var keyEl = el("span", "xin-net-method", String(key));
+		keyEl.style.maxWidth = "45%";
+		keyEl.style.overflow = "hidden";
+		keyEl.style.textOverflow = "ellipsis";
+		keyEl.style.whiteSpace = "nowrap";
+		head.appendChild(keyEl);
+		var val = el("span", "xin-net-url", String(value));
+		val.style.flex = "1";
+		val.style.overflow = "hidden";
+		val.style.textOverflow = "ellipsis";
+		val.style.whiteSpace = "nowrap";
+		head.appendChild(val);
+		var del = el("button", "xin-btn");
+		del.type = "button";
+		del.appendChild(icon("trash"));
+		del.addEventListener("click", function () {
+			if (kind === "cookies") removeCookie(key);
+			else removeStorageItem(kind, key);
+		});
+		head.appendChild(del);
+		row.appendChild(head);
+		row.addEventListener("click", function (e) {
+			if (e.target.closest("button")) return;
+			var full = row.querySelector(".xin-storage-full");
+			if (full) {
+				full.remove();
+				return;
+			}
+			var box = el("div", "xin-storage-full");
+			box.textContent = String(value);
+			box.addEventListener("click", function () {
+				if (xcoder.clipboard) xcoder.clipboard(String(value));
+			});
+			row.appendChild(box);
+		});
+		return row;
+	}
+
+	function renderStorage() {
+		if (!$storage) return;
+		$storage.replaceChildren();
+		if (!storageData) {
+			$storage.appendChild(el("div", "xin-empty", t("inspector storage idle", "Abra uma página para ver o armazenamento")));
+			return;
+		}
+		if (storageFilter === "cookies") {
+			var cookies = storageData.cookies || [];
+			if (!cookies.length) {
+				$storage.appendChild(el("div", "xin-empty", t("inspector storage empty", "Vazio")));
+				return;
+			}
+			cookies.forEach(function (cookie) {
+				var eq = cookie.indexOf("=");
+				var key = eq === -1 ? cookie : cookie.slice(0, eq);
+				var value = eq === -1 ? "" : cookie.slice(eq + 1);
+				$storage.appendChild(storageRow("cookies", key, value));
+			});
+			return;
+		}
+		var bucket = storageFilter === "session" ? storageData.session : storageData.local;
+		var keys = Object.keys(bucket || {});
+		if (!keys.length) {
+			$storage.appendChild(el("div", "xin-empty", t("inspector storage empty", "Vazio")));
+			return;
+		}
+		keys.sort().forEach(function (key) {
+			$storage.appendChild(storageRow(storageFilter, key, bucket[key]));
+		});
+	}
+
 	function runConsole() {
 		var code = $consoleIn && $consoleIn.value && $consoleIn.value.trim();
 		if (!code) return;
@@ -584,6 +777,7 @@
 		renderTree();
 		renderConsole();
 		renderNetwork();
+		renderStorage();
 		return page;
 	}
 
@@ -635,6 +829,7 @@ var sidebarAppsApi = xcoder.require("sidebarApps");
 			treeCache.clear();
 			consoleLog = [];
 			networkLog = [];
+			storageData = null;
 		});
 	});
 })();
