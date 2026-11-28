@@ -2,7 +2,7 @@
   "id": "xcoder.inspector",
   "name": "Inspector",
   "main": "main.js",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "icon": "icon.png",
   "readme": "readme.md",
   "author": {
@@ -11,14 +11,16 @@
   },
   "license": "MIT",
   "keywords": [
-    "inspector",
+    "console",
+    "cookies",
+    "debug",
     "devtools",
     "dom",
-    "console",
+    "dom-tree",
+    "elements",
+    "inspector",
     "network",
-    "storage",
-    "debug",
-    "cookies"
+    "storage"
   ],
   "supported_editor": "all",
   "min_version_code": 10843,
